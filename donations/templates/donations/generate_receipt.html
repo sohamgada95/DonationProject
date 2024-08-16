@@ -1,0 +1,68 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.4">
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'donations/receipt.css' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@100..900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    <title>Donation Receipt</title>
+</head>
+<body>
+    <div class="container" id="whole_receipt">
+        <div class="main">
+            <div class="banner" style="font-family: 'Mukta';">
+                <img src="{% static 'donations/vyc_logo.png' %}" class="logo">
+                <div class="text">
+                    <h1>विकास यूथ मंडळ</h1>
+                    <p class="note">सार्वजनिक गणेशोत्सव मंडळ (विकास कॉम्प्लेक्स)</p>
+                    <p class="raja">विकास चा राजा</p>
+                </div>
+                <img src="{% static 'donations/vyc_logo.png' %}" class="logo">
+            </div>
+            
+            <hr>
+
+            <div class="donor_info">
+                <small>Receipt number: 0{{ donation.id }}</small>
+                <h2>Amount of ₹{{ donation.amount }} received with thanks from:</h2>
+                <h1>{{ donation.building }} - {{ donation.flat_number }}</h1>
+                <div class="thankyou_text">
+                    <p>Vikas Youth Mandal thanks you for your generous donation for <br><b>Ganesh Utsav 2024.</b></p>
+                </div>
+            </div>
+
+            <div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- ________________________________________________________________________________ -->
+
+    {% block member_controls %}
+    <div class="links-col">
+        <a class="link" href="https://api.whatsapp.com/send?phone={{ donation.phone_number }}&text=http://192.46.213.194:8000/receipt/{{donation.receipt_token}}">Whatsapp link</a>
+        
+        <a class="link" href="sms:{{donation.phone_number}}?body=http://192.46.213.194:8000/receipt/{{donation.receipt_token}}">sms link</a>   
+
+        <a class="link" href="{% url 'receipt_choice' %}">Go back</a>
+    </div>
+    {% endblock member_controls %}
+
+    <!-- ________________________________________________________________________________ -->
+</body>
+</html>
+

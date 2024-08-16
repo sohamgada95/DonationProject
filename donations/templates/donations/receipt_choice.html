@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Receipt Choice</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        {% include 'donations/navigation.html' %}
+        
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="font-weight: 200; margin-top: 10px;">Choose an action</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-success" role="alert">
+                                Your donation has been recorded. Thankyou!
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <thead>
+                                            <th>Building</th>
+                                            <th>Flat</th>
+                                            <th>Phone</th>
+                                            <th>Paid</th>
+                                            <th>Amount</th>
+                                            <th>Mode</th>
+                                            <th>Member</th>
+                                        </thead>
+                                        <tr>
+                                            <td>{{ donation.building }}</td>
+                                            <td>{{ donation.flat_number }}</td>
+                                            <td>{{ donation.phone_number }}</td>
+                                            <td>{{ donation.amount_paid }}</td>
+                                            <td>₹{{ donation.amount }}</td>
+                                            <td>{{ donation.mode }}</td>
+                                            <td>{{ donation.committee_member.username }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% if donation.amount_paid == False %}
+                                <div class="d-grid gap-2" style="margin-top: 20px;">
+                                    <a class="btn btn-primary disabled" href="{% url 'generate_receipt' %}" role="button">Generate Receipt</a>
+                                    <a class="btn btn-primary" href="{% url 'donation_form' %}" role="button">New Donation</a>
+                                </div>
+                            {% else %}
+                                <div class="d-grid gap-2" style="margin-top: 20px;">
+                                    <a class="btn btn-primary" href="{% url 'generate_receipt' %}" role="button">Generate Receipt</a>
+                                    <a class="btn btn-primary" href="{% url 'donation_form' %}" role="button">New Donation</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

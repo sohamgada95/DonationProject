@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Donations</title>   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <style>
+        #donationsTable_info, #donationsTable_paginate, label{
+            width: 100%;
+            align-items: center;
+            font-size: 12px;
+            margin: 10px 0px;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'donations/navigation.html' %}
+    
+    <table id="donationsTable" class="table" style="border-color: rgba(0, 0, 0, 0.1); width: 100%;">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Building</th>
+                <th>Flat</th>
+                <th>Paid</th>
+                <th>Amount</th>
+                <th>Mode</th>
+                <th>Member</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for donation in donations %}
+                <tr>
+                    <td style="color: rgba(0, 0, 0, 0.4);">{{ donation.id }}</td>
+                    <td>{{ donation.building }}</td>
+                    <td>{{ donation.flat_number }}</td>
+                    {% if donation.amount_paid %}
+                        <td>{{ donation.amount_paid }}</td>
+                    {% else %}
+                        <td style="color: red;">{{ donation.amount_paid }}</td>
+                    {% endif %}
+                    <td>{{ donation.amount }}</td>
+                    <td>{{ donation.mode }}</td>
+                    <td>{{ donation.committee_member.username }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Include jQuery and DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#donationsTable').DataTable();
+        });
+    </script>
+</body>
+</html>
