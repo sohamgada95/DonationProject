@@ -3,7 +3,7 @@
     display: block;
     margin: auto;
     border: 4px dashed rgb(140, 0, 0);
-    background-color: rgba(255, 152, 7, 0.4);
+    /* background-color: rgba(255, 152, 7, 0.4); */
     align-items: center;
 }
 .main{
@@ -19,6 +19,10 @@
     padding: 10px 0px;
 }
 /* _______________________________________ */
+.ganpati{
+    width: 120px;
+    padding: 10px 30px;
+}
 .logo{
     width: 150px;
     padding: 10px 30px;
@@ -48,11 +52,11 @@
     border: 1px solid rgb(140, 0, 0);
     border-radius: 10px;
     padding-top: 8px;
-    padding-left: 13px;
-    padding-right: 13px;
+    padding-left: 16px;
+    padding-right: 16px;
 
     background-color: rgb(140, 0, 0);
-    color: rgb(255, 202, 129);
+    color: rgb(255, 255, 255);
 
     font-size: 22px;
     margin: 0;
