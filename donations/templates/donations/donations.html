@@ -48,7 +48,7 @@
                     <td>{{ donation.mode }}</td>
                     <td>{{ donation.committee_member.username }}</td>
 		    <td><a href="https://api.whatsapp.com/send?phone={{ donation.phone_number }}&text=https://www.vikasyouthmandal.co.in/receipt/{{ donation.receipt_token }}">whatsapp link</a></td>
-		    <td><a href="sms:{{ donation.phone_number }}?body=https://www.vikasyouthmandal.co.in/receipt/{{ donation.receipt_token }}"></a></td>	
+		    <td><a href="sms:{{ donation.phone_number }}?body=https://www.vikasyouthmandal.co.in/receipt/{{ donation.receipt_token }}">sms link</a></td>	
                 </tr>
             {% endfor %}
         </tbody>
