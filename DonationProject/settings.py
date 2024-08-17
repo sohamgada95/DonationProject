@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-vvqp0^+5fm0=3d-jxle9*ztv&^kye--xw8542v@a7vjcip7!7q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.105.43.67', '*']
+ALLOWED_HOSTS = ['172.105.43.67', 'www.vikasyouthmandal.co.in']
 
 
 # Application definition
@@ -118,4 +118,7 @@ LOGIN_URL = 'login'
 LOGIUN_REDIRECT_URL = 'donation_form'
 LOGOUT_REDIRECT_URL = 'login'
 
-
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_DOMAIN = '.vikasyouthmandal.co.in'
+CSRF_TRUSTED_ORIGINS = ['https://www.vikasyouthmandal.co.in']

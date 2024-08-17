@@ -55,9 +55,9 @@
 
     {% block member_controls %}
     <div class="links-col">
-        <a class="link" href="https://api.whatsapp.com/send?phone={{ donation.phone_number }}&text=http://192.46.213.194:8000/receipt/{{donation.receipt_token}}">Whatsapp link</a>
+        <a class="link" href="https://api.whatsapp.com/send?phone={{ donation.phone_number }}&text=https://www.vikasyouthmandal.co.in/receipt/{{donation.receipt_token}}">Whatsapp link</a>
         
-        <a class="link" href="sms:{{donation.phone_number}}?body=http://192.46.213.194:8000/receipt/{{donation.receipt_token}}">sms link</a>   
+        <a class="link" href="sms:{{donation.phone_number}}?body=https://www.vikasyouthmandal.co.in/receipt/{{donation.receipt_token}}">sms link</a>   
 
         <a class="link" href="{% url 'receipt_choice' %}">Go back</a>
     </div>
