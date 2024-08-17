@@ -23,10 +23,13 @@
                 <th>id</th>
                 <th>Building</th>
                 <th>Flat</th>
+		<th>Phone</th>
                 <th>Paid</th>
                 <th>Amount</th>
                 <th>Mode</th>
                 <th>Member</th>
+		<th>Whatsapp</th>
+		<th>SMS</th>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +38,7 @@
                     <td style="color: rgba(0, 0, 0, 0.4);">{{ donation.id }}</td>
                     <td>{{ donation.building }}</td>
                     <td>{{ donation.flat_number }}</td>
+		    <td>{{ donation.phone_number }}</td>	
                     {% if donation.amount_paid %}
                         <td>{{ donation.amount_paid }}</td>
                     {% else %}
@@ -43,6 +47,8 @@
                     <td>{{ donation.amount }}</td>
                     <td>{{ donation.mode }}</td>
                     <td>{{ donation.committee_member.username }}</td>
+		    <td><a href="https://api.whatsapp.com/send?phone={{ donation.phone_number }}&text=https://www.vikasyouthmandal.co.in/receipt/{{ donation.receipt_token }}">whatsapp link</a></td>
+		    <td><a href="sms:{{ donation.phone_number }}?body=https://www.vikasyouthmandal.co.in/receipt/{{ donation.receipt_token }}"></a></td>	
                 </tr>
             {% endfor %}
         </tbody>
