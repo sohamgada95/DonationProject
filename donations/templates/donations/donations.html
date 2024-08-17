@@ -27,7 +27,7 @@
                 <th>Paid</th>
                 <th>Amount</th>
                 <th>Mode</th>
-                <th>Member</th>
+                <th>Collected by</th>
 		<th>Whatsapp</th>
 		<th>SMS</th>
             </tr>
@@ -47,9 +47,14 @@
                     <td>{{ donation.amount }}</td>
                     <td>{{ donation.mode }}</td>
                     <td>{{ donation.committee_member.username }}</td>
-		    <td><a href="https://api.whatsapp.com/send?phone={{ donation.phone_number }}&text=https://www.vikasyouthmandal.co.in/receipt/{{ donation.receipt_token }}">whatsapp link</a></td>
-		    <td><a href="sms:{{ donation.phone_number }}?body=https://www.vikasyouthmandal.co.in/receipt/{{ donation.receipt_token }}">sms link</a></td>	
-                </tr>
+		    {% if donation.amount_paid %}	
+		    	<td><a href="https://api.whatsapp.com/send?phone={{ donation.phone_number }}&text=https://www.vikasyouthmandal.co.in/receipt/{{ donation.receipt_token }}">whatsapp link</a></td>
+		    	<td><a href="sms:{{ donation.phone_number }}?body=https://www.vikasyouthmandal.co.in/receipt/{{ donation.receipt_token }}">sms link</a></td>	
+                    {% else %}
+			<td>--</td>
+			<td>--</td>
+		    {% endif %}	
+		</tr>
             {% endfor %}
         </tbody>
     </table>
