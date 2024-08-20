@@ -27,6 +27,7 @@
                 <th>Paid</th>
                 <th>Amount</th>
                 <th>Mode</th>
+		<th>Date</th>
                 <th>Collected by</th>
 		<th>Whatsapp</th>
 		<th>SMS</th>
@@ -46,6 +47,7 @@
                     {% endif %}
                     <td>{{ donation.amount }}</td>
                     <td>{{ donation.mode }}</td>
+		    <td>{{ donation.date }}</td>	
                     <td>{{ donation.committee_member.username }}</td>
 		    {% if donation.amount_paid %}	
 		    	<td><a href="https://api.whatsapp.com/send?phone={{ donation.phone_number }}&text=https://www.vikasyouthmandal.co.in/receipt/{{ donation.receipt_token }}">whatsapp link</a></td>

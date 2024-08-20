@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 
 class Donation(models.Model):
@@ -12,6 +13,7 @@ class Donation(models.Model):
     committee_member = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     receipt_token = models.CharField(max_length=32, unique=True, blank=True)
+    date = models.DateField(default=timezone.now)
 
     def save(self, *args, **kwargs):
         if not self.receipt_token:
@@ -19,5 +21,4 @@ class Donation(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.building} - {self.flat_number} = {self.amount}' 
-    
+        return f'{self.building} - {self.flat_number} = {self.amount}'
