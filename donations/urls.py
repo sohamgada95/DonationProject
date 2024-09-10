@@ -9,4 +9,5 @@ urlpatterns = [
     path('receipt/<str:receipt_token>', views.generate_receipt_by_token, name='generate_receipt_by_token'),
     path('donations/', views.donations_view, name='donations'),
     path('logout/', views.logout_view, name='logout'),
+    path('webhook/', views.github_webhook, name='github_webhook'),
 ]

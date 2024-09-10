@@ -103,4 +103,16 @@ def logout_view(request):
     return redirect('login')   
 
 
+from django.views.decorators.csrf import csrf_exempt
+import subprocess
 
+@csrf_exempt
+def github_webhook(request):
+    if request.method == 'POST':
+        result = subprocess.run(['git', 'pull', 'origin', 'main'], cwd='/home/soham/DonationProject', capture_output=True, text=True)
+        if result.returncode == 0:
+            return HttpResponse('Git pull successful', status=200)
+        else:
+            return HttpResponse(f'Git pull failed: {result.stderr}', status=500)
+    else:
+        return HttpResponse('Invalid request method', status=400)
