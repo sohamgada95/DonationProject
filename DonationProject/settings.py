@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-vvqp0^+5fm0=3d-jxle9*ztv&^kye--xw8542v@a7vjcip7!7q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['www.vikasyouthmandal.co.in', 'vikasyouthmandal.co.in']
+ALLOWED_HOSTS = ['www.vikasyouthmandal.co.in', 'vikasyouthmandal.co.in', '.vercel.app']
 
 
 # Application definition
@@ -60,7 +60,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'DonationProject.wsgi.application'
+WSGI_APPLICATION = 'DonationProject.wsgi.app'
 
 
 # Database
