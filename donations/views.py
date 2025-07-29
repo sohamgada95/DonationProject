@@ -3,8 +3,13 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from datetime import datetime
 
 from django.template.loader import render_to_string
+
+# Import only the minimal Google Sheets functions
+from googlesheets import gs_read, gs_create
 
 
 def login_view(request):
@@ -25,6 +30,20 @@ def login_view(request):
     return render(request, 'donations/login.html')
 
 
+def add_committee_member_info(donation_data):
+    """Add committee_member object to donation data for template compatibility"""
+    try:
+        committee_member_id = donation_data.get('committee_member_id')
+        if committee_member_id:
+            user = User.objects.get(id=committee_member_id)
+            donation_data['committee_member'] = user
+        else:
+            donation_data['committee_member'] = None
+    except User.DoesNotExist:
+        donation_data['committee_member'] = None
+    return donation_data
+
+
 @login_required
 def donation_form_view(request):
     if request.method == 'POST':
@@ -37,22 +56,32 @@ def donation_form_view(request):
 
         amount_paid = True if int(amount) > 0 else False 
 
-        if Donation.objects.filter(building=building, flat_number=flat_number).exists():
-            return render(request, 'donations/donation_form.html', {'error': f'Donation already received from {building} - {flat_number}.'})
+        # Allow only one donation per (building, flat_number) per year
+        current_year = datetime.now().year
+        existing_donations = gs_read('donations', {'building': building, 'flat_number': flat_number})
+        year_donations = [d for d in existing_donations if str(d.get('date', '')).startswith(str(current_year))]
+        if len(year_donations) >= 1:
+            return render(request, 'donations/donation_form.html', {'error': f'Donation already received from {building} - {flat_number} for {current_year}.'})
         else:
-            donation = Donation.objects.create(
-                building=building,
-                flat_number=flat_number,
-                phone_number=phone_number,
-                amount_paid=amount_paid,
-                amount=amount,
-                mode=mode,
-                committee_member=committee_member
-            )
-
-            request.session['donation_id'] = donation.id
-
-            return redirect('receipt_choice')
+            # Create donation using Google Sheets
+            donation_data = {
+                'building': building,
+                'flat_number': int(flat_number),
+                'phone_number': int(phone_number) if phone_number else 0,
+                'amount_paid': amount_paid,
+                'amount': int(amount),
+                'mode': mode,
+                'committee_member_id': committee_member.id
+            }
+            
+            donation = gs_create('donations', donation_data)
+            
+            if donation:
+                request.session['donation_id'] = donation['id']
+                return redirect('receipt_choice')
+            else:
+                return render(request, 'donations/donation_form.html', {'error': 'Failed to save donation. Please try again.'})
+    
     return render(request, 'donations/donation_form.html')
 
 
@@ -62,10 +91,14 @@ def receipt_choice_view(request):
     
     if donation_id is None:
         return HttpResponse("No donation data found.")
-    try:
-        donation_data = Donation.objects.get(id=donation_id)
-    except Donation.DoesNotExist:
+    
+    donation_list = gs_read('donations', {'id': donation_id})
+    if not donation_list:
         return HttpResponse("Donation not found.")
+    donation_data = donation_list[0]
+    
+    # Add committee_member object for template compatibility
+    donation_data = add_committee_member_info(donation_data)
     
     return render(request, 'donations/receipt_choice.html', {'donation': donation_data})
 
@@ -76,25 +109,38 @@ def generate_receipt_view(request):
 
     if donation_id is None:
         return HttpResponse("No donation data found.")
-    try:
-        donation_data = Donation.objects.get(id=donation_id)
-    except Donation.DoesNotExist:
+    
+    donation_list = gs_read('donations', {'id': donation_id})
+    if not donation_list:
         return HttpResponse("Donation not found.")
+    donation_data = donation_list[0]
+    
+    # Add committee_member object for template compatibility
+    donation_data = add_committee_member_info(donation_data)
           
     return render(request, 'donations/generate_receipt.html', {'donation': donation_data})
 
 
 def generate_receipt_by_token(request, receipt_token):
-    try:
-        donation_data = Donation.objects.get(receipt_token=receipt_token)
-    except Donation.DoesNotExist:
+    donation_list = gs_read('donations', {'receipt_token': receipt_token})
+    if not donation_list:
         return HttpResponse("Donation not found.")
+    donation_data = donation_list[0]
+    
+    # Add committee_member object for template compatibility
+    donation_data = add_committee_member_info(donation_data)
+    
     return render(request, 'donations/generate_receipt_by_token.html', {'donation': donation_data})
     
 
 @login_required
 def donations_view(request):
-    donations = Donation.objects.all()
+    donations = gs_read('donations')
+    
+    # Add committee_member objects for template compatibility
+    for donation in donations:
+        add_committee_member_info(donation)
+    
     return render(request, 'donations/donations.html', {'donations': donations})  
 
 

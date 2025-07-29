@@ -1,4 +1,5 @@
 from django.contrib import admin
 from .models import Donation
 
-admin.site.register(Donation)
+# Commented out since we're now using Google Sheets for donations
+# admin.site.register(Donation)

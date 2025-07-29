@@ -1,5 +1,9 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from secrets.env file
+load_dotenv('secrets.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,12 +13,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-vvqp0^+5fm0=3d-jxle9*ztv&^kye--xw8542v@a7vjcip7!7q'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-vvqp0^+5fm0=3d-jxle9*ztv&^kye--xw8542v@a7vjcip7!7q')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['www.vikasyouthmandal.co.in', 'vikasyouthmandal.co.in', '.vercel.app']
+ALLOWED_HOSTS = ['www.vikasyouthmandal.co.in', 'vikasyouthmandal.co.in', '.vercel.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -121,8 +125,9 @@ LOGIN_URL = 'login'
 LOGIUN_REDIRECT_URL = 'donation_form'
 LOGOUT_REDIRECT_URL = 'login'
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+# Security settings - disabled for local development
+CSRF_COOKIE_SECURE = False  # Changed from True
+SESSION_COOKIE_SECURE = False  # Changed from True
 # SECURE_SSL_REDIRECT = True
 CSRF_TRUSTED_ORIGINS = ['https://www.vikasyouthmandal.co.in']
 
