@@ -25,6 +25,9 @@ def login_view(request):
             request.session['user_id'] = user.id
             request.session['username'] = user.username
             request.session['is_authenticated'] = True
+            # Force session save
+            request.session.save()
+            print(f"Session saved: {request.session.get('is_authenticated')}")
             return redirect('donation_form')
         else:
             print("Authentication failed")
@@ -63,6 +66,8 @@ def add_committee_member_info(donation_data):
 def custom_login_required(view_func):
     """Custom login decorator that doesn't use Django's database-based auth"""
     def wrapper(request, *args, **kwargs):
+        print(f"Checking authentication: {request.session.get('is_authenticated')}")
+        print(f"Session keys: {list(request.session.keys())}")
         if request.session.get('is_authenticated'):
             return view_func(request, *args, **kwargs)
         else:

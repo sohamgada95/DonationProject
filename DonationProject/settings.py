@@ -135,13 +135,7 @@ CSRF_TRUSTED_ORIGINS = ['https://www.vikasyouthmandal.co.in']
 # SECURE_HSTS_PRELOAD = True
 #SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
-# Session configuration for Vercel deployment
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_CACHE_ALIAS = 'default'
-
-# Cache configuration for sessions
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    }
-}
+# Session configuration for Vercel deployment - using signed cookies
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 86400  # 24 hours in seconds
