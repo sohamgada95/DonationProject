@@ -2,10 +2,11 @@ import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
 import uuid
+import os
+import json
 
-# Hardcoded Google Sheets configuration
+# Google Sheets configuration
 GOOGLE_SPREADSHEET_ID = '18m_9aCJZBO49G9Ki41n4NedNugYB5yquz6yQtyyQ9JE'
-GOOGLE_CREDENTIALS_FILE = 'gs_credentials.json'
 
 SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets',
@@ -15,7 +16,16 @@ SCOPES = [
 def get_google_sheets_client():
     """Initialize and return Google Sheets client"""
     try:
-        creds = Credentials.from_service_account_file(GOOGLE_CREDENTIALS_FILE, scopes=SCOPES)
+        # Try to get credentials from environment variable first (for Vercel)
+        credentials_json = os.getenv('GOOGLE_CREDENTIALS_JSON')
+        if credentials_json:
+            # Parse the JSON string from environment variable
+            creds_dict = json.loads(credentials_json)
+            creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+        else:
+            # Fallback to file for local development
+            creds = Credentials.from_service_account_file('gs_credentials.json', scopes=SCOPES)
+        
         client = gspread.authorize(creds)
         return client
     except Exception as e:
