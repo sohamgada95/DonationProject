@@ -145,3 +145,9 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
+
+# Custom authentication backend to prevent last_login updates
+AUTHENTICATION_BACKENDS = [
+    'donations.auth_backend.NoLastLoginBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
