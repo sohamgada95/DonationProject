@@ -13,26 +13,20 @@ from googlesheets import gs_read, gs_create
 
 
 def login_view(request):
-    print(f"Request method: {request.method}")
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(f"Username: {username}, Password: {password}")
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            print("Authentication successful")
             # Custom login without database writes
             request.session['user_id'] = user.id
             request.session['username'] = user.username
             request.session['is_authenticated'] = True
             # Force session save
             request.session.save()
-            print(f"Session saved: {request.session.get('is_authenticated')}")
             return redirect('donation_form')
         else:
-            print("Authentication failed")
             return render(request, 'donations/login.html', {'error': 'Invalid credentials'})
-    print("Rendering login page")
     return render(request, 'donations/login.html')
 
 
@@ -66,8 +60,6 @@ def add_committee_member_info(donation_data):
 def custom_login_required(view_func):
     """Custom login decorator that doesn't use Django's database-based auth"""
     def wrapper(request, *args, **kwargs):
-        print(f"Checking authentication: {request.session.get('is_authenticated')}")
-        print(f"Session keys: {list(request.session.keys())}")
         if request.session.get('is_authenticated'):
             return view_func(request, *args, **kwargs)
         else:

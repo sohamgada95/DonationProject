@@ -18,7 +18,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-vvqp0^+5fm0=3d-jxle9*ztv&^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['www.vikasyouthmandal.co.in', 'vikasyouthmandal.co.in', '.vercel.app', 'localhost', '127.0.0.1']
+
 
 
 # Application definition
@@ -125,11 +125,21 @@ LOGIN_URL = 'login'
 LOGIUN_REDIRECT_URL = 'donation_form'
 LOGOUT_REDIRECT_URL = 'login'
 
-# Security settings - disabled for local development
-CSRF_COOKIE_SECURE = False  # Changed from True
-SESSION_COOKIE_SECURE = False  # Changed from True
-# SECURE_SSL_REDIRECT = True
-CSRF_TRUSTED_ORIGINS = ['https://www.vikasyouthmandal.co.in']
+# Security settings for production
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = [
+    'https://vikasyouthmandal.vercel.app',
+    'https://www.vikasyouthmandal.co.in'
+]
+
+# Allowed hosts for production
+ALLOWED_HOSTS = [
+    'vikasyouthmandal.vercel.app',
+    'www.vikasyouthmandal.co.in',
+    'localhost',
+    '127.0.0.1'
+]
 
 # SECURE_HSTS_SECONDS = 31536000
 # SECURE_HSTS_PRELOAD = True
