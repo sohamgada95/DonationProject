@@ -35,7 +35,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',  # Re-enabled for cache sessions
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -134,3 +134,14 @@ CSRF_TRUSTED_ORIGINS = ['https://www.vikasyouthmandal.co.in']
 # SECURE_HSTS_SECONDS = 31536000
 # SECURE_HSTS_PRELOAD = True
 #SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# Session configuration for Vercel deployment
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+
+# Cache configuration for sessions
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
