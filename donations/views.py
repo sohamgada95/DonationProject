@@ -2,7 +2,7 @@ from .models import Donation
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, logout
 from django.contrib.auth.models import User
 from datetime import datetime
 
@@ -21,13 +21,29 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             print("Authentication successful")
-            login(request, user)
+            # Custom login without database writes
+            request.session['user_id'] = user.id
+            request.session['username'] = user.username
+            request.session['is_authenticated'] = True
             return redirect('donation_form')
         else:
             print("Authentication failed")
             return render(request, 'donations/login.html', {'error': 'Invalid credentials'})
     print("Rendering login page")
     return render(request, 'donations/login.html')
+
+
+def get_current_user(request):
+    """Get the current user from session without database queries"""
+    if request.session.get('is_authenticated'):
+        user_id = request.session.get('user_id')
+        username = request.session.get('username')
+        # Create a minimal user object
+        user = User()
+        user.id = user_id
+        user.username = username
+        return user
+    return None
 
 
 def add_committee_member_info(donation_data):
@@ -44,7 +60,17 @@ def add_committee_member_info(donation_data):
     return donation_data
 
 
-@login_required
+def custom_login_required(view_func):
+    """Custom login decorator that doesn't use Django's database-based auth"""
+    def wrapper(request, *args, **kwargs):
+        if request.session.get('is_authenticated'):
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('login')
+    return wrapper
+
+
+@custom_login_required
 def donation_form_view(request):
     if request.method == 'POST':
         building = request.POST.get('building')
@@ -52,7 +78,7 @@ def donation_form_view(request):
         phone_number = request.POST.get('phone_number')
         amount = request.POST.get('amount')
         mode = request.POST.get('mode')
-        committee_member = request.user
+        committee_member = get_current_user(request)
 
         amount_paid = True if int(amount) > 0 else False 
 
@@ -85,7 +111,7 @@ def donation_form_view(request):
     return render(request, 'donations/donation_form.html')
 
 
-@login_required
+@custom_login_required
 def receipt_choice_view(request):
     donation_id = request.session.get('donation_id')
     
@@ -103,7 +129,7 @@ def receipt_choice_view(request):
     return render(request, 'donations/receipt_choice.html', {'donation': donation_data})
 
 
-@login_required
+@custom_login_required
 def generate_receipt_view(request):
     donation_id = request.session.get('donation_id')
 
@@ -133,7 +159,7 @@ def generate_receipt_by_token(request, receipt_token):
     return render(request, 'donations/generate_receipt_by_token.html', {'donation': donation_data})
     
 
-@login_required
+@custom_login_required
 def donations_view(request):
     donations = gs_read('donations')
     
@@ -145,7 +171,8 @@ def donations_view(request):
 
 
 def logout_view(request):
-    logout(request)
+    # Clear session data
+    request.session.flush()
     return redirect('login')   
 
 
